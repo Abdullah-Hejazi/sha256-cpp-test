@@ -7,15 +7,39 @@ class sha256 {
   string message;
   byte ** blocks;
   uint32 size;
+  uint32 initialCompressionValues[8] = {
+    0x6a09e667,
+    0xbb67ae85,
+    0x3c6ef372,
+    0xa54ff53a,
+    0x510e527f,
+    0x9b05688c,
+    0x1f83d9ab,
+    0x5be0cd19
+  };
+
+  uint32 compression[8];
 
   public:
     sha256(string msg) {
       message = msg;
+
+      for(uint32 i = 0; i < 8; i++) {
+        compression[i] = initialCompressionValues[i];
+      }
+
+      fill();
+      padding();
+
+      for(uint32 i = 0; i < size; i++) {
+        messageSchedule(blocks[i]);
+      }
+    }
+
+    void fill() {
       size = ceil((float)message.size() / (float)BLOCK_SIZE);
 
       blocks = new byte*[size];
-
-      cout << "Message Size: " << size << endl;
 
       for(uint32 i = 0; i < size; i++) {
         blocks[i] = new byte[BLOCK_SIZE];
@@ -26,8 +50,6 @@ class sha256 {
           blocks[i][j] = (byte)message[j];
         }
       }
-
-      padding();
     }
 
     void padding() {
@@ -37,16 +59,40 @@ class sha256 {
         blocks[size - 1][i] = 0;
       }
 
-      for(uint32 i = 512 - 64; i < 512; i++) {
-        moveByte(blocks[size - 1][i], message.size() * 8, 512 - i - 1);
+      for(uint32 i = 64 - 2; i < 64; i++) {
+        moveByte(blocks[size - 1][i], message.size() * 8, 64 - i - 1);
       }
-
-      print();
     }
 
-    void print() {
-      for(uint32 i = 0; i < size; i++) {
-        printBlock(blocks[i]);
+    void messageSchedule(byte * block) {
+      uint32 words[64];
+      for(uint32 i = 0; i < 64; i += 4) {
+        uint32 j = (uint32)(i / 4);
+        words[j] = (block[i] << 24) | (block[i + 1] << 16) | (block[i + 2] << 8) | (block[i + 3]);
+      }
+
+      for(uint32 i = 16; i < 64; i++) {
+        words[i] = segma1(words[i-2]) + words[i-7] + segma0(words[i-15]) + words[i-16];
+      }
+
+      performCompression(words);
+    }
+
+    void performCompression(uint32 schedule[64]) {
+      for (uint32 i = 0; i < 64; i++) {
+        uint32 T1 = csegma1(compression[4]) + 
+                    choice(compression[4], compression[5], compression[6]) +
+                    compression[7] + constants[i] + schedule[i];
+
+        uint32 T2 = csegma0(compression[0]) + majority(compression[0], compression[1], compression[2]);
+
+        moveArrayDown(compression, 8);
+        compression[0] = T1+T2;
+        compression[4] += T1;
+
+      }
+      for(uint32 j = 0; j < 8; j++) {
+        compression[j] += initialCompressionValues[j];
       }
     }
 
@@ -103,9 +149,19 @@ class sha256 {
 
       return result;
     }
+
+    string getResult() {
+      string result = "";
+
+      for(uint32 i = 0; i < 8; i++) {
+        result += hexa(compression[i]);
+      }
+
+      return result;
+    }
 };
 
 int main() {
-  string x = "abc";
-  sha256 sha("abc");
+  sha256 sha("hello world");
+  cout << sha.getResult() << endl;
 }

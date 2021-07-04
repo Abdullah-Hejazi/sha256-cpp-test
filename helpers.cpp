@@ -11,7 +11,7 @@ using namespace std;
 typedef unsigned int uint32;
 typedef unsigned char byte;
 
-const uint32 cons[64] = {
+const uint32 constants[64] = {
   0x428a2f98,
   0x71374491,
   0xb5c0fbcf,
@@ -80,7 +80,7 @@ const uint32 cons[64] = {
 
 #define PRIME_SEARCH_MAX 500
 #define INT_BITS 32
-#define BLOCK_SIZE 512
+#define BLOCK_SIZE 64
 
 string binary(uint32 n) {
   string result = "";
@@ -103,6 +103,18 @@ string binary(byte n) {
     } else {
       result = "0" + result;
     }
+  }
+
+  return result;
+}
+
+string hexa(uint32 n) {
+  char characters[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+  string result = "";
+  for (int i = 7; i >= 0; i--) {
+    uint32 val = (n >> (i * 4)) & 15;
+
+    result += characters[val];
   }
 
   return result;
@@ -179,4 +191,10 @@ void printBlock(byte * block) {
 void moveByte(byte & b, uint32 n, short index) {
   // cout << "index = " << index << endl << (n >> min(index * 8, 31)) << endl << endl;
   b = n >> min(index * 8, 31);
+}
+
+void moveArrayDown(uint32 * array, short size) {
+  for(int i = size - 1; i >= 1; i--) {
+    array[i] = array[i - 1];
+  }
 }
