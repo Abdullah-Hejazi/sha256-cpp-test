@@ -23,6 +23,7 @@ class sha256 {
   public:
     sha256(string msg) {
       message = msg;
+
       fill();
       padding();
 
@@ -40,12 +41,12 @@ class sha256 {
       blocks = new byte*[size];
 
       for(uint32 i = 0; i < size; i++) {
-        blocks[i] = new byte[BLOCK_SIZE]();
+        blocks[i] = new byte[BLOCK_SIZE];
       }
 
       for(uint32 i = 0; i < size; i++) {
         for(uint32 j = 0; j < message.size(); j++) {
-          blocks[i][j] = (byte)message[j];
+          blocks[i][j] = (byte)message[(i * BLOCK_SIZE) + j];
         }
       }
     }
@@ -115,10 +116,10 @@ class sha256 {
 
     ~sha256() {
       for(uint32 i = 0; i < size; i++) {
-        delete blocks[i];
+        delete[] blocks[i];
       }
 
-      delete blocks;
+      delete[] blocks;
     }
 
     uint32 segma0(uint32 n) {
