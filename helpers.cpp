@@ -189,7 +189,6 @@ void printBlock(byte * block) {
 }
 
 void moveByte(byte & b, uint32 n, short index) {
-  // cout << "index = " << index << endl << (n >> min(index * 8, 31)) << endl << endl;
   b = n >> min(index * 8, 31);
 }
 
