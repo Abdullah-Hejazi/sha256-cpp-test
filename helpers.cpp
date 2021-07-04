@@ -95,6 +95,19 @@ string binary(uint32 n) {
   return result;
 }
 
+string binary(byte n) {
+  string result = "";
+  for (int i = 0; i < 8; i++) {
+    if ((1 << i) & n) {
+      result = "1" + result;
+    } else {
+      result = "0" + result;
+    }
+  }
+
+  return result;
+}
+
 bool isPrime(uint32 n) {
   if (n == 0 || n == 1) return false;
 
@@ -159,6 +172,11 @@ uint32 decimal(string bin) {
 
 void printBlock(byte * block) {
   for (uint32 i = 0; i < BLOCK_SIZE; i++) {
-    
+    cout << binary(block[i]) << endl;
   }
+}
+
+void moveByte(byte & b, uint32 n, short index) {
+  // cout << "index = " << index << endl << (n >> min(index * 8, 31)) << endl << endl;
+  b = n >> min(index * 8, 31);
 }

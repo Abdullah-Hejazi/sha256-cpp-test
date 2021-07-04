@@ -27,10 +27,26 @@ class sha256 {
         }
       }
 
+      padding();
+    }
+
+    void padding() {
       blocks[size - 1][size * message.size()] = (1 << 7);
 
       for(uint32 i = size * message.size() + 2; i < BLOCK_SIZE; i++) {
         blocks[size - 1][i] = 0;
+      }
+
+      for(uint32 i = 512 - 64; i < 512; i++) {
+        moveByte(blocks[size - 1][i], message.size() * 8, 512 - i - 1);
+      }
+
+      print();
+    }
+
+    void print() {
+      for(uint32 i = 0; i < size; i++) {
+        printBlock(blocks[i]);
       }
     }
 
