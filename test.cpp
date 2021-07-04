@@ -34,6 +34,7 @@ class sha256 {
 
     void fill() {
       size = ceil((float)message.size() / (float)BLOCK_SIZE);
+      if (message.size() % BLOCK_SIZE == 0) size++;
 
       cout << "Message size: " << message.size() << endl;
       cout << "Number of blocks: " << size << endl;
@@ -181,6 +182,6 @@ class sha256 {
 
 int main() {
   //sha256 sha("abc");
-  sha256 sha("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id nisi quis erat posuere lacinia. Fusce vitae enim eget leo bibendum sodales. Cras massa odio, vehicula quis lacinia eu, maximus at sem. Vestibulum quis rutrum neque, sed tristique dui. Nunc mauris massa, vestibulum in pharetra eget, tristique eu massa. Maecenas ac faucibus lectus. Nam tempor nisi vel orci dictum pulvinar.  Integer sit amet lobortis mi. Integer malesuada tortor blandit, efficitur dui a, sagittis elit. Nullam nec faucibus nulla, a vestibulum purus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Maecenas vehicula elit sed ipsum mattis ullamcorper. Mauris sit amet ex id risus dapibus finibus quis pulvinar felis. Donec quis pulvinar leo. Donec non tortor vel libero vulputate ultrices. Quisque ut enim malesuada lacus bibendum dignissim vitae quis orci. Vestibulum et nibh gravida, sollicitudin justo ut, aliquet nisl. Pellentesque tincidunt leo eu ante viverra, sed eleifend elit congue. Nullam tincidunt lectus diam, et tempor quam tempus vitae. Morbi in turpis magna. Nullam non urna quis sapien vehicula convallis vel ut nisl. Quisque scelerisque aliquet efficitur.  Nullam tincidunt tempus lorem eu ultrices. Nullam est orci, pellentesque sed faucibus nec, consectetur quis justo. Proin gravida vel eros id semper. Nunc ut nibh sit amet neque consectetur commodo ac ac massa. Fusce semper pretium justo sollicitudin semper. Vestibulum a magna lobortis, feugiat enim sed, pretium nisi. Curabitur condimentum libero nec nulla commodo, at ultricies nunc posuere. Morbi eget felis ut sapien sollicitudin laoreet. Donec aliquam lobortis tempor. Morbi iaculis libero eget magna feugiat ultricies. Mauris sit amet blandit tortor.");
+  sha256 sha("abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabca");
   cout << sha.getResult() << endl;
 }
